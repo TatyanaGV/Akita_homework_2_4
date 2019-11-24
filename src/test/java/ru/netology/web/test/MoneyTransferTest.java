@@ -13,17 +13,12 @@ import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MoneyTransferTest {
+
     @Test
     @DisplayName("Перевод суммы с карты №2 на карту №1")
     void transferToCard1Positive() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
 
-        val moneyTransferCard = new MoneyTransferCard();
+        val moneyTransferCard = createFormMobileBank();
         moneyTransferCard.transferToCard1();
 
         assertEquals(moneyTransferCard.getBalance1(), "12500");
@@ -34,14 +29,7 @@ class MoneyTransferTest {
     @Test
     @DisplayName("Перевод суммы с карты №1 на карту №2")
     void transferToCard2Positive() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
-
-        val moneyTransferCard = new MoneyTransferCard();
+        val moneyTransferCard = createFormMobileBank();
         moneyTransferCard.transferToCard2();
 
         assertEquals(moneyTransferCard.getBalance1(), "7500");
@@ -52,14 +40,7 @@ class MoneyTransferTest {
     @Test
     @DisplayName("Перевод с карты №1 суммы превышающей баланс данной карты")
     void transferToCard2AmountOverCard1Negative() {
-        open("http://localhost:9999");
-        val loginPage = new LoginPage();
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validLogin(authInfo);
-        val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        verificationPage.validVerify(verificationCode);
-
-        val moneyTransferCard = new MoneyTransferCard();
+        val moneyTransferCard = createFormMobileBank();
         moneyTransferCard.transferToCard2AmountOverCard1();
 
         assertEquals(moneyTransferCard.getBalance1(), "10000");
@@ -70,6 +51,15 @@ class MoneyTransferTest {
     @Test
     @DisplayName("перевод с карты №2 дробной суммы на карту №1")
     void transferToCard1DoubleAmountWithCard2() {
+        val moneyTransferCard = createFormMobileBank();
+        moneyTransferCard.transferToCard1DoubleAmount();
+
+        assertEquals(moneyTransferCard.getBalance1(), "10400,3");
+        assertEquals(moneyTransferCard.getBalance2(), "9599,7");
+
+    }
+
+    public MoneyTransferCard createFormMobileBank () {
         open("http://localhost:9999");
         val loginPage = new LoginPage();
         val authInfo = DataHelper.getAuthInfo();
@@ -77,12 +67,8 @@ class MoneyTransferTest {
         val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         verificationPage.validVerify(verificationCode);
 
-        val moneyTransferCard = new MoneyTransferCard();
-        moneyTransferCard.transferToCard1DoubleAmount();
-
-        assertEquals(moneyTransferCard.getBalance1(), "10400,3");
-        assertEquals(moneyTransferCard.getBalance2(), "9599,7");
-
+        val formTransferCard = new MoneyTransferCard();
+        return formTransferCard;
     }
 
 }

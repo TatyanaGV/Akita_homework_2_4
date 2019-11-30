@@ -19,10 +19,12 @@ class MoneyTransferTest {
     void transferToCard1Positive() {
 
         val moneyTransferCard = createFormMobileBank();
-        moneyTransferCard.transferToCard1();
+        int balance1Test = moneyTransferCard.getBalance1() + 2500;
+        int balance2Test = moneyTransferCard.getBalance2() - 2500;
+        moneyTransferCard.transferToCard1(2500);
 
-        assertEquals(moneyTransferCard.getBalance1(), "12500");
-        assertEquals(moneyTransferCard.getBalance2(), "7500");
+        assertEquals(balance1Test, moneyTransferCard.getBalance1());
+        assertEquals(balance2Test, moneyTransferCard.getBalance2());
 
     }
 
@@ -30,10 +32,13 @@ class MoneyTransferTest {
     @DisplayName("Перевод суммы с карты №1 на карту №2")
     void transferToCard2Positive() {
         val moneyTransferCard = createFormMobileBank();
-        moneyTransferCard.transferToCard2();
+        int balance1Test = moneyTransferCard.getBalance1() - 2500;
+        int balance2Test = moneyTransferCard.getBalance2() + 2500;
+        moneyTransferCard.transferToCard2(2500);
 
-        assertEquals(moneyTransferCard.getBalance1(), "7500");
-        assertEquals(moneyTransferCard.getBalance2(), "12500");
+
+        assertEquals(balance1Test, moneyTransferCard.getBalance1());
+        assertEquals(balance2Test, moneyTransferCard.getBalance2());
 
     }
 
@@ -41,21 +46,24 @@ class MoneyTransferTest {
     @DisplayName("Перевод с карты №1 суммы превышающей баланс данной карты")
     void transferToCard2AmountOverCard1Negative() {
         val moneyTransferCard = createFormMobileBank();
-        moneyTransferCard.transferToCard2AmountOverCard1();
+        int balance1Test = moneyTransferCard.getBalance1();
+        int balance2Test = moneyTransferCard.getBalance2();
+        moneyTransferCard.transferToCard2AmountOverCard1(100000);
 
-        assertEquals(moneyTransferCard.getBalance1(), "10000");
-        assertEquals(moneyTransferCard.getBalance2(), "10000");
+        assertEquals(balance1Test, moneyTransferCard.getBalance1());
+        assertEquals(balance2Test, moneyTransferCard.getBalance2());
     }
-
 
     @Test
     @DisplayName("перевод с карты №2 дробной суммы на карту №1")
     void transferToCard1DoubleAmountWithCard2() {
         val moneyTransferCard = createFormMobileBank();
-        moneyTransferCard.transferToCard1DoubleAmount();
+        double balance1Test = moneyTransferCard.getBalance1Double()  - 400.3;
+        double balance2Test = moneyTransferCard.getBalance2Double() + 400.3;
+        moneyTransferCard.transferToCard1DoubleAmount("400,3");
 
-        assertEquals(moneyTransferCard.getBalance1(), "10400,3");
-        assertEquals(moneyTransferCard.getBalance2(), "9599,7");
+        assertEquals(balance1Test, moneyTransferCard.getBalance1());
+        assertEquals(balance2Test, moneyTransferCard.getBalance2());
 
     }
 
@@ -70,6 +78,5 @@ class MoneyTransferTest {
         val formTransferCard = new MoneyTransferCard();
         return formTransferCard;
     }
-
 }
 
